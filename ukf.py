@@ -70,14 +70,12 @@ def sigma_points(dim,X,P,alpha=.001,beta=2):
 def weights(dim,alpha=.001,beta=2):
 
     l=alpha**2*(dim+k)-dim
-    weights_m=[]
-    weights_p=[]
+    
+    weights= l/(2*(dim+l))
+    weights0_m=l/(dim+l)
+    weights0_p=(l/(dim+l))+(1-alpha**2-beta)
 
-    for j in range(dim):
-        weights_m.append(l/(i+l))
-        weights_p.append((l/(i+l))+(1-alpha**2-beta))
-
-    return np.array(weights_m).flatten(),np.array(weights_p).flatten()
+    return weights,weights0_m,weights0_p
 
 
 
@@ -95,38 +93,31 @@ def predict(dim):
 
     for m in range(len(s_pos)):
 
-        s_pos_tr.append(next_state(s_pos[i]))
+        s_pos_tr.append(next_state(s_pos[i])*weights(dim,alpha=.001,beta=2)[0])
 
     for n in range(len(s_pos)):
 
-        s_neg_tr.append(next_state(s_pos[i]))
+        s_neg_tr.append(next_state(s_pos[i])*weights(dim,alpha=.001,beta=2)[0])
 
-    s_0_tr=next_state(s_0)
-
-
-
-    
-   
+    s_0_tr=next_state(s_0)*weights(dim,alpha=.001,beta=2)[1]
 
 
-    
-
-
-
-    pred_ns=
+    pred_ns= sum( s_pos_tr)+sum(s_neg_tr)+ s_0_tr)
     
         
         
-    return Y0
+    return pred_ns, pred_cov
 
 
 
 
 def update():
 
+    
 
 
-    return
+
+    return updated_ns, updated_cov
 
         
     
