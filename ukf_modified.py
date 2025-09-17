@@ -44,8 +44,8 @@ def initialize():
 
     X0=np.array([0,0,0])
     Q=np.diag([.1,.2,.3])
-    R=np.diag([.5,.5,.5])
-    P0=np.diag([.1,.1,.1])
+    R=np.array([.5])
+    P0=np.array([[1, 0, 0],[2, 1, 0],[3, 2, 1]])
 
     return X0,P0,Q,R
 
@@ -117,7 +117,7 @@ def predict(dim,P0,X0,Q):
         
         s_neg_c.append(np.outer(s_neg_tr[r]-pred_ns,s_neg_tr[r]-pred_ns)* com_weight)
 
-    s_0_c=np.outer( s_0_tr-pred_ns)*weight_cov
+    s_0_c=np.outer( s_0_tr-pred_ns,s_0_tr-pred_ns)*weight_cov
 
 
     pred_cov=sum( s_pos_c)+sum(s_neg_c)+ s_0_c+ Q
