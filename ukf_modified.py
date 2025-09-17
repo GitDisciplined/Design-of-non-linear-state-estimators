@@ -56,11 +56,10 @@ def sigma_points(dim,X,P,alpha=.001,beta=2):
     k=0
     la= alpha**2*(dim+k)-dim
     gamma1=math.sqrt(dim+la)
+    sigma_p=[]
+    sigma_n=[]
     for i in range(dim):
 
-        sigma_p=[]
-        sigma_n=[]
-        
         sigma_p.append(X+(gamma1*np.linalg.cholesky(P)[:,i]))
         sigma_n.append(X-(gamma1*np.linalg.cholesky(P)[:,i]))
 
@@ -94,13 +93,15 @@ def predict(dim,P0,X0,Q):
    
 
     for m in range(len(s_pos)):
+        u0_tf=next_state(s_pos[m])
 
-        s_pos_tr.append(next_state(s_pos[m])*com_weight)
+        s_pos_tr.append(u0_tf*com_weight)
         
 
     for n in range(len(s_neg)):
+        u_tf=next_state(s_neg[n])
 
-        s_neg_tr.append(next_state(s_neg[n])*com_weight)
+        s_neg_tr.append(u_tf*com_weight)
 
     s_0_tr=next_state(s_0)*weight_mean
 
@@ -112,7 +113,7 @@ def predict(dim,P0,X0,Q):
 
         u1_tf=next_state(s_pos_tr[o])
 
-        s_pos_c.append(np.outer(u_tf-pred_ns,u_tf-pred_ns) *com_weight)
+        s_pos_c.append(np.outer(u1_tf-pred_ns,u1_tf-pred_ns) *com_weight)
 
     for r in range(len(s_neg)):
         
