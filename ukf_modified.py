@@ -111,16 +111,13 @@ def predict(dim,P0,X0,Q):
 
     for o in range(len(s_pos)):
 
-        u1_tf=next_state(s_pos_tr[o])
-
-        s_pos_c.append(np.outer(u1_tf-pred_ns,u1_tf-pred_ns) *com_weight)
+        s_pos_c.append(np.outer(s_pos_tr[o]-pred_ns,s_pos_tr[o]-pred_ns) *com_weight)
 
     for r in range(len(s_neg)):
         
-        u2_tf=next_state(s_neg_tr[r])
-        s_neg_c.append(np.outer(u2_tf-pred_ns,u2_tf-pred_ns)* com_weight)
+        s_neg_c.append(np.outer(s_neg_tr[r]-pred_ns,s_neg_tr[r]-pred_ns)* com_weight)
 
-    s_0_c=np.outer(next_state(s_0)-pred_ns)*weight_cov
+    s_0_c=np.outer( s_0_tr-pred_ns)*weight_cov
 
 
     pred_cov=sum( s_pos_c)+sum(s_neg_c)+ s_0_c+ Q
