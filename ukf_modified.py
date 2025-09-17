@@ -55,14 +55,14 @@ def sigma_points(dim,X,P,alpha=.001,beta=2):
     
     k=0
     la= alpha**2*(dim+k)-dim
-    gamma=math.sqrt(dim+la)
+    gamma1=math.sqrt(dim+la)
     for i in range(dim):
 
         sigma_p=[]
         sigma_n=[]
         
-        sigma_p.append(X+(gamma*np.linalg.cholesky(P)[:,i]))
-        sigma_n.append(X-(gamma*np.linalg.cholesky(P)[:,i]))
+        sigma_p.append(X+(gamma1*np.linalg.cholesky(P)[:,i]))
+        sigma_n.append(X-(gamma1*np.linalg.cholesky(P)[:,i]))
 
     return np.array(sigma_p),np.array(sigma_n),X
 
@@ -85,7 +85,7 @@ def predict(dim,P0,X0,Q):
     
     s_pos,s_neg,s_0=sigma_points(dim,X0,P0,alpha=.001,beta=2)
    
-    mean_weight=weights(dim,alpha=.001,beta=2)[0]
+    com_weight,weight_mean,weight_cov=weights(dim,alpha=.001,beta=2)
 
     s_pos_tr=[]
     s_neg_tr=[]
@@ -95,14 +95,14 @@ def predict(dim,P0,X0,Q):
 
     for m in range(len(s_pos)):
 
-        s_pos_tr.append(next_state(s_pos[m])*weights(dim,alpha=.001,beta=2)[0])
+        s_pos_tr.append(next_state(s_pos[m])*com_weight)
         
 
     for n in range(len(s_neg)):
 
-        s_neg_tr.append(next_state(s_neg[n])*weights(dim,alpha=.001,beta=2)[0])
+        s_neg_tr.append(next_state(s_neg[n])*com_weight)
 
-    s_0_tr=next_state(s_0)*weights(dim,alpha=.001,beta=2)[1]
+    s_0_tr=next_state(s_0)*weight_mean
 
 
     pred_ns= sum( s_pos_tr)+sum(s_neg_tr)+ s_0_tr
@@ -133,6 +133,7 @@ def predict(dim,P0,X0,Q):
 def update(dim,actual_measure,pred_state,pred_covar,R):
 
     u_pos,u_neg, u_0=sigma_points(dim,pred_state,pred_covar,alpha=.001,beta=2)
+    com_weight_u,weight_mean_u,weight_cov_u=weights(dim,alpha=.001,beta=2)
 
     H=np.array([1,0,0])
 
@@ -140,12 +141,12 @@ def update(dim,actual_measure,pred_state,pred_covar,R):
     u_neg_tr=[]
 
     for x in range(len(u_pos)):
-        u_pos_tr.append(np.dot(H,u_pos[x])*weights(dim,alpha=.001,beta=2)[0])
+        u_pos_tr.append(np.dot(H,u_pos[x])*com_weight_u)
     for y in range(len(u_pos)):
-        u_neg_tr.append(np.dot(H,u_neg[y])*weights(dim,alpha=.001,beta=2)[0])
+        u_neg_tr.append(np.dot(H,u_neg[y])*com_weight_u)
 
 
-    u_0_tr= np.dot(H,u_0)*weights(dim,alpha=.001,beta=2)[1]
+    u_0_tr= np.dot(H,u_0)*weight_mean_u
 
 
     pred_measure=sum(u_pos_tr)+sum(u_neg_tr)+u_0_tr
@@ -159,11 +160,11 @@ def update(dim,actual_measure,pred_state,pred_covar,R):
     u_neg_c=[]
 
     for a1 in range(len(u_pos)):
-        u_pos_c.append(np.outer(u_pos_tr[a1]-pred_measure,u_pos_tr[a1]-pred_measure)*weights(dim,alpha=.001,beta=2)[0])
+        u_pos_c.append(np.outer(u_pos_tr[a1]-pred_measure,u_pos_tr[a1]-pred_measure)*com_weight_u)
     for a2 in range(len(u_neg)):
-        u_neg_c.append(np.outer(u_neg_tr[a2]-pred_measure,u_neg_tr[a2]-pred_measure)*weights(dim,alpha=.001,beta=2)[0])
+        u_neg_c.append(np.outer(u_neg_tr[a2]-pred_measure,u_neg_tr[a2]-pred_measure)*com_weight_u)
 
-    u_0_c= np.outer(u_0_tr-pred_measure,u_0_tr-pred_measure)* weights(dim,alpha=.001,beta=2)[2]
+    u_0_c= np.outer(u_0_tr-pred_measure,u_0_tr-pred_measure)* weight_cov_u
 
     innov_cov=sum(u_pos_c)+sum(u_neg_c)+u_0_c+ R
    
@@ -175,11 +176,11 @@ def update(dim,actual_measure,pred_state,pred_covar,R):
     u_neg_cc=[]
 
     for b1 in range(len(u_pos)):
-        u_pos_cc.append(np.matmul(u_pos[b1]-pred_state,u_pos_tr[b1]-pred_measure)*weights(dim,alpha=.001,beta=2)[0])
+        u_pos_cc.append(np.matmul(u_pos[b1]-pred_state,u_pos_tr[b1]-pred_measure)*com_weight_u)
     for b2 in range(len(u_neg)):
-        u_neg_cc.append(np.matmul(u_neg[b1]-pred_state,u_neg_tr[b1]-pred_measure)*weights(dim,alpha=.001,beta=2)[0])
+        u_neg_cc.append(np.matmul(u_neg[b1]-pred_state,u_neg_tr[b1]-pred_measure)*com_weight_u)
 
-    u_0_cc=  np.matmul(u_0-pred_state,u_0_tr-pred_measure)* weights(dim,alpha=.001,beta=2)[2]
+    u_0_cc=  np.matmul(u_0-pred_state,u_0_tr-pred_measure)* weight_cov_u
 
     cross_cov=sum(u_pos_cc)+sum(u_neg_cc)+u_0_cc
 
@@ -191,11 +192,11 @@ def update(dim,actual_measure,pred_state,pred_covar,R):
    
    #updated_next_state
    
-    updated_ns= pred_state+k@(actual_measure-pred_measure)
+    updated_ns= pred_state+K@(actual_measure-pred_measure)
 
    #updated_covariance
 
-    updated_cov=pred_covar-K@innov_cov@innov_cov.T
+    updated_cov=pred_covar-K@innov_cov@K.T
 
     
 
@@ -206,7 +207,7 @@ def update(dim,actual_measure,pred_state,pred_covar,R):
 
 
 def measure():
-     return np.random.normal(2,1.4)
+     return np.array([np.random.normal(2,1.4),0,0])
 
 
 # main
@@ -215,6 +216,7 @@ def measure():
 dim=3
 
 X0,P0,Q,R=initialize()
+state_estimate=[]
 
 for itere in range(100):
 
@@ -225,8 +227,6 @@ for itere in range(100):
 
     X0,P0=estimated_ns, estimated_cov
 
-    state_estimate=[]
-    
     state_estimate.append(estimated_ns)
 
 
