@@ -110,15 +110,16 @@ def predict(dim,P0,X0,Q):
 
     for o in range(len(s_pos)):
 
-        s_pos_c.append(np.outer(next_state(s_pos_tr[o])-pred_ns,next_state(s_pos_tr[o])-pred_ns) *
-                       weights(dim,alpha=.001,beta=2)[0])
+        u1_tf=next_state(s_pos_tr[o])
+
+        s_pos_c.append(np.outer(u_tf-pred_ns,u_tf-pred_ns) *com_weight)
 
     for r in range(len(s_neg)):
+        
+        u2_tf=next_state(s_neg_tr[r])
+        s_neg_c.append(np.outer(u2_tf-pred_ns,u2_tf-pred_ns)* com_weight)
 
-        s_neg_c.append(np.outer(next_state(s_neg_tr[r])-pred_ns,next_state(s_neg_tr[r])-pred_ns)*
-                       weights(dim,alpha=.001,beta=2)[0])
-
-    s_0_c=np.outer(next_state(s_0)-pred_ns)*weights(dim,alpha=.001,beta=2)[2]
+    s_0_c=np.outer(next_state(s_0)-pred_ns)*weight_cov
 
 
     pred_cov=sum( s_pos_c)+sum(s_neg_c)+ s_0_c+ Q
@@ -160,9 +161,11 @@ def update(dim,actual_measure,pred_state,pred_covar,R):
     u_neg_c=[]
 
     for a1 in range(len(u_pos)):
-        u_pos_c.append(np.outer(u_pos_tr[a1]-pred_measure,u_pos_tr[a1]-pred_measure)*com_weight_u)
+        tf1=u_pos_tr[a1]
+        u_pos_c.append(np.outer(tf1-pred_measure,tf1-pred_measure)*com_weight_u)
     for a2 in range(len(u_neg)):
-        u_neg_c.append(np.outer(u_neg_tr[a2]-pred_measure,u_neg_tr[a2]-pred_measure)*com_weight_u)
+        tf2=u_neg_tr[a2]
+        u_neg_c.append(np.outer(tf2-pred_measure,tf2-pred_measure)*com_weight_u)
 
     u_0_c= np.outer(u_0_tr-pred_measure,u_0_tr-pred_measure)* weight_cov_u
 
