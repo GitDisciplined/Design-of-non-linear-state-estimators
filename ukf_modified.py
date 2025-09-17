@@ -42,7 +42,7 @@ def next_state(state):
 
 def initialize():
 
-    X0=np.array([[0,0,0]])
+    X0=np.array([0,0,0])
     Q=np.diag([.1,.2,.3])
     R=np.diag([.5,.5,.5])
     P0=np.diag([.1,.1,.1])
@@ -208,7 +208,9 @@ def update(dim,actual_measure,pred_state,pred_covar,R):
 
 
 def measure():
-     return np.array([np.random.normal(2,1.4),0,0])
+     return np.array([np.random.normal(2,1.4),
+                      np.random.normal(2,1.4),
+                      np.random.normal(2,1.4)])
 
 
 # main
