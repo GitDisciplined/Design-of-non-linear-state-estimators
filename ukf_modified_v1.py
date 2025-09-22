@@ -54,7 +54,7 @@ def initialize():
 def sigma_points(dim,X,P,alpha=.001,beta=2):
 
     
-    k=0
+    k=.1
     #la= alpha**2*(dim+k)-dim
     #gamma1=math.sqrt(dim+la)
     sigma_p=[]
@@ -214,7 +214,7 @@ def update(dim,actual_measure,pred_state,pred_covar,R):
 
 
 def measure():
-     return np.random.normal(90,5)
+     return np.random.normal(90,.5)
 
 
 # main
@@ -226,17 +226,18 @@ X0,P0,Q,R=initialize()
 state_estimate=[]
 
 for itere in range(100):
+    actual=measure()
 
     predicted_state,predicted_cov=predict(dim,P0,X0,Q)
 
-    estimated_ns, estimated_cov=update(dim,measure(),predicted_state,
+    estimated_ns, estimated_cov=update(dim,actual,predicted_state,
                                        predicted_cov,R)
 
     X0,P0=estimated_ns, estimated_cov
     #print(X0)
 
     state_estimate.append(estimated_ns)
-    print(predicted_state)
+    print(estimated_ns)
 
 
 #print(state_estimate,predicted_cov)
