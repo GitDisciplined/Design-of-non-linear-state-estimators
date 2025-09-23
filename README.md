@@ -1,4 +1,4 @@
-## Implementation of glucose and insulin estimation algorithm using unsceneted kalman filter
+## Implementation of glucose and insulin estimation using unsceneted kalman filter algorithm
 
 ![n5](https://github.com/user-attachments/assets/457fd105-1adf-4467-b5ed-1789a36214cd)
 ![n1](https://github.com/user-attachments/assets/058433f9-0226-4264-bc7d-ce55d7eac8c2)
