@@ -15,9 +15,12 @@
 
 
 ## Results
-![glucose_estimation](https://github.com/user-attachments/assets/2c80e9ea-1452-414f-8ffd-52200a44f796)
-![plasma_insulin_estimation](https://github.com/user-attachments/assets/9e218c31-43ba-402e-abb3-14961a7a44d6)
-![interstitial_plasma_estimation](https://github.com/user-attachments/assets/d8b35643-2a22-430c-b6bb-96e764711e51)
+![glucose](https://github.com/user-attachments/assets/c4a91aa7-3711-4fca-b636-bef13350d37d)
+![interstitial insulin](https://github.com/user-attachments/assets/25913ae1-8ef8-4a59-9342-3c1e71c39336)
+![plasma insulin](https://github.com/user-attachments/assets/55fd3020-8510-47ca-991a-feefbcc8484a)
+
+
+
 
 
 
