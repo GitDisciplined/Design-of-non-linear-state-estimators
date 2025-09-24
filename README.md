@@ -8,7 +8,8 @@
 ![1](https://github.com/user-attachments/assets/0eda2916-b85e-4fae-b0b5-61d441196691)
 ![2](https://github.com/user-attachments/assets/5d0046cc-de12-46e7-af13-4ecebe0b7994)
 ![3](https://github.com/user-attachments/assets/ace053f2-b49a-48a9-a3ed-cadff0c481f7)
-![4](https://github.com/user-attachments/assets/dad55a04-1aa6-4b9f-93e7-09fd4a054cb9)
+![n1](https://github.com/user-attachments/assets/7d620fe7-1cf8-419f-9c13-9f983294b973)
+
 ## Results
 ![glucose_estimation](https://github.com/user-attachments/assets/2c80e9ea-1452-414f-8ffd-52200a44f796)
 ![plasma_insulin_estimation](https://github.com/user-attachments/assets/9e218c31-43ba-402e-abb3-14961a7a44d6)
