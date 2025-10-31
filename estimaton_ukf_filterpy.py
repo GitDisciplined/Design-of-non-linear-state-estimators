@@ -185,7 +185,7 @@ for  itere in range(steps):
 
     #print(ukf.x)
 
-    estimate.append([2])
+    estimate.append(ukf.x[2])
 
 
 plt.plot(time,ig,estimate)
