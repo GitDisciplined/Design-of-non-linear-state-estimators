@@ -70,16 +70,13 @@ def meal(n):
     if 100<=n<115:
         
         return 20
-    elif 200<=n<220 :
+    #elif 200<=n<220 :
 
-        return 50
-    #elif n==700 :
-        #return 50
+        #return 18
+    #elif 400<=420:
+        #return 14
 
-    #elif n==800:
-
-        #return  50
-
+    
     else:
 
         return 0
@@ -202,40 +199,48 @@ G_basal = 5
 Q1 = G_basal * Vg
 X0=np.array([0,0,Q1,.5*Q1,0,0,0,.001,.001,.001,Q1*.1])
 
-time=list(range(1000))
+time=list(range(700))
 
 
 
 gamma=.5
 alpha=.6
-epsilon=.8
+#epsilon=.6
 no_of_states=10
-no_of_actions=7
-#epsilon_min=.01
-#epsilon_start=.6
-#ld=.001
+no_of_actions=8
+epsilon_min=.01
+epsilon_start=.8
+ld=.001
 
 
 
 q_matrix,state_list,action_list=initilaize(no_of_states,no_of_actions)
 state_vec=[0,1*Vg,2*Vg,3*Vg,4*Vg,5*Vg,6*Vg,7*Vg,8*Vg,9*Vg]
-action_vec=[0,20,30,50,100,150,200]
+action_vec=[10,20,30,40,100,200,300,500]
 
 
 
-nstate=[]
-ins=[]
 
-for episodes in range(10000):
+
+for episodes in range(100):
+   
     u=0
+    #instant=np.random.uniform(10,800)
+    #if 10+instant<=episodes<=25+instant:
+        #D= meal(np.random.normal(20,10))
 
-    instant=np.random.uniform(10,800)
-    if 10+instant<=episodes<=25+instant:
-        D= meal(np.random.normal(20,10))
+    #elif 100+instant<=episodes<=125+instant:
+        #D= meal(np.random.normal(20,10))
 
-    else:
-        D=0
-                      
+
+    #else:
+    #D=meal(episodes)
+
+
+    nstate=[]
+    ins=[]
+
+    epsilon=epsilon_min+(epsilon_start-epsilon_min)*np.exp(-ld*episodes)
 
 
 
@@ -254,8 +259,16 @@ for episodes in range(10000):
             #u=50
         #else:
             #u=0
+        if 50<=i<=65:
     
-        D= meal(i)
+            D= np.random.normal(20,5)
+
+        elif 250<=i<=265:
+
+            D= np.random.normal(18,5)
+            
+        else:
+            D=0
     
 
         #carb.append(D)
@@ -263,7 +276,7 @@ for episodes in range(10000):
     
     
         Ug=X0[1]/tmax
-        G= X0[2]/Vg
+        G= max(X0[2]/Vg,3)
         ig=X0[10]/Vg
 
         #print(G,ig)
@@ -282,25 +295,38 @@ for episodes in range(10000):
 
         par=(Vg, R_thr, R_cl, V1, ka, ke, Bio, tmax, kint,
         Ug_ceil, F01c, Fr, EGP, Ug, u, D, G,k12,EGP0)
+        
 
 
         state=X0
 
         sol=next_state(X0,par)
+        
+            
+
+        re=100*np.exp(-(sol[2]-X0[2]))+10*np.exp(-(X0[2]-sol[2]))
+
+        
 
         X0=sol
 
 
-        if G<=3:
+        #if G<=3:
 
-            re=-50
+            #re=np.exp(-50)
 
-        elif G>=7:
-            re=-50
+        #elif G>=7:
+            #re=np.exp(-10)
 
-        else:
+        #else:
 
-            re=-(5-G)
+            #re=np.exp(-(5-G))
+
+        
+
+    
+
+        
 
     
 
@@ -318,6 +344,8 @@ for episodes in range(10000):
    
         current_action=action_criteria(q_matrix,action_list,state_vec.index(current_state))
         u=current_action
+        
+        #print(u)
         #u=0
 
         ns=min(state_vec, key=lambda x: abs(x- sol[2]))
@@ -335,17 +363,26 @@ for episodes in range(10000):
 
     q_matrix=updated_Q
 
+   
+        
+
+    
+
     print(q_matrix)
 
+    
 
 new_q=q_matrix
-    
+policy=[]
+
+for po in range(no_of_states):
+    policy.append(action_vec[int(np.argmax(new_q[po]))] )   
     
 
 plt.plot(time,nstate)
 plt.show()
 
-        
+print(policy)       
         
 
 
