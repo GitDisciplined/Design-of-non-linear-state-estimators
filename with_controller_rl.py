@@ -295,7 +295,7 @@ for episodes in range(100):
         measurement=state[10]+np.random.normal(0,1)
     #measurement=(state[10])*(1-np.exp(-kint*i))+np.random.normal(0,.1)
 
-        pres=X0
+        
         ins.append(u)
    
 
@@ -362,7 +362,7 @@ for episodes in range(100):
      #   tmax=temp
 
    
-
+        pres=X0
     
 
         par=(Vg, R_thr, R_cl, V1, ka, ke, Bio, tmax, kint,
@@ -377,6 +377,8 @@ for episodes in range(100):
         est_g=ukf.x[2]/Vg
         est_ig=max(ukf.x[10]/Vg,.2)
 
+        
+
     
 
         #print(est_g)
@@ -388,8 +390,10 @@ for episodes in range(100):
 
         re=100*np.exp((ukf.x[2]-tem[2])).item()+10*np.exp(-(ukf.x[9]-tem[9])).item()
 
+
+        nt=ukf.x
         #print(re)
-    
+        X0=nt
     #print(state[2])
         sol=next_state(state,par)
 
@@ -427,7 +431,7 @@ for episodes in range(100):
         #print(u)
         #u=0
 
-        ns=min(state_vec, key=lambda x: abs(x- sol[2]))
+        ns=min(state_vec, key=lambda x: abs(x- nt[2]))
         #print(pres[2],sol[2])
 
         reward=re
@@ -477,9 +481,9 @@ axs[0,1].set_ylabel('Glucose concentration (mmol/L)')
 axs[0,1].set_xlabel('time (minutes)')
 #axs[1].legend()
 
-axs[1,0].plot(time,carb,color='black', linestyle='solid')
-axs[1,0].set_title('meal intake rate rate')
-axs[1,0].set_ylabel('meal intake rate (mU/minute)')
+axs[1,0].plot(time,ins,color='black', linestyle='solid')
+axs[1,0].set_title('insulin infusion  rate')
+axs[1,0].set_ylabel('insulin infusion rate (mU/minute)')
 axs[1,0].set_xlabel('time (minutes)')
 
 axs[1,1].plot(time,hns,label='gut',color='black', linestyle='solid')
@@ -517,8 +521,6 @@ plt.show()
           #3.9<q1/vg<7.8
 
     
-
-
 
 
 
