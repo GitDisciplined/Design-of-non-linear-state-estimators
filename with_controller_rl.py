@@ -220,7 +220,7 @@ dim_x=11
 dim_z=1
 dt=1
 
-points = MerweScaledSigmaPoints(n=dim_x, alpha=0.1, beta=2, kappa=0)
+points = MerweScaledSigmaPoints(n=dim_x, alpha=0.01, beta=2, kappa=8)
 
 
 ukf = UKF(dim_x=dim_x, dim_z=dim_z, dt=1,
@@ -521,6 +521,7 @@ plt.show()
           #3.9<q1/vg<7.8
 
     
+
 
 
 
