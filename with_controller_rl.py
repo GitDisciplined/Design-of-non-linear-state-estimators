@@ -331,7 +331,7 @@ for episodes in range(100):
     
 
         carb.append(D)
-        ins.append(u)
+        #ins.append(u)
     
     
         Ug=state[1]/tmax
@@ -517,6 +517,7 @@ plt.show()
           #3.9<q1/vg<7.8
 
     
+
 
 
 
